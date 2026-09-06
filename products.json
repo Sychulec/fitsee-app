@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Granatowa koszula Oxford",
+    "brand": "Lacoste",
+    "price": 329,
+    "category": "Koszula",
+    "occasion": "Wesele",
+    "style": "Elegancki casual"
+  },
+  {
+    "id": 2,
+    "name": "Spodnie chino slim",
+    "brand": "Tommy Hilfiger",
+    "price": 299,
+    "category": "Spodnie",
+    "occasion": "Wesele",
+    "style": "Elegancki casual"
+  },
+  {
+    "id": 3,
+    "name": "Białe sneakersy skórzane",
+    "brand": "Tommy Hilfiger",
+    "price": 349,
+    "category": "Buty",
+    "occasion": "Wesele",
+    "style": "Elegancki casual"
+  },
+  {
+    "id": 4,
+    "name": "Marynarka casual",
+    "brand": "Selected",
+    "price": 399,
+    "category": "Marynarka",
+    "occasion": "Wesele",
+    "style": "Elegancki casual"
+  }
+]
