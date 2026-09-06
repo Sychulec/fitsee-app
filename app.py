@@ -1,38 +1,58 @@
 from flask import Flask, render_template_string, request, jsonify
 import os
+import json
 
 app = Flask(__name__)
 
-PRODUCTS = [
-    {
-        "id": 1,
-        "name": "Granatowa koszula premium",
-        "brand": "Lacoste",
-        "price": 329,
-        "type": "Koszula"
-    },
-    {
-        "id": 2,
-        "name": "Spodnie chino slim",
-        "brand": "Tommy Hilfiger",
-        "price": 299,
-        "type": "Spodnie"
-    },
-    {
-        "id": 3,
-        "name": "Białe sneakersy",
-        "brand": "Tommy Hilfiger",
-        "price": 349,
-        "type": "Buty"
-    },
-    {
-        "id": 4,
-        "name": "Lekka marynarka casual",
-        "brand": "Selected",
-        "price": 399,
-        "type": "Marynarka"
-    }
-]
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PRODUCTS_FILE = os.path.join(BASE_DIR, "products.json")
+
+
+def load_products():
+    try:
+        with open(PRODUCTS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print("Błąd odczytu products.json:", e)
+        return []
+
+
+def filter_products(products, occasion, style, budget):
+    occasion = occasion.strip().lower()
+    style = style.strip().lower()
+
+    filtered = []
+
+    for product in products:
+        product_occasion = str(product.get("occasion", "")).lower()
+        product_style = str(product.get("style", "")).lower()
+
+        occasion_match = not occasion or occasion in product_occasion
+        style_match = not style or style in product_style
+
+        if occasion_match and style_match:
+            filtered.append(product)
+
+    total = sum(float(p.get("price", 0)) for p in filtered)
+
+    if budget and total > budget:
+        filtered = sorted(filtered, key=lambda x: float(x.get("price", 0)))
+
+        selected = []
+        current_total = 0
+
+        for product in filtered:
+            price = float(product.get("price", 0))
+
+            if current_total + price <= budget:
+                selected.append(product)
+                current_total += price
+
+        filtered = selected
+        total = current_total
+
+    return filtered, total
+
 
 HTML = """
 <!DOCTYPE html>
@@ -128,10 +148,6 @@ input, select {
     font-size: 17px;
     cursor: pointer;
     margin-top: 10px;
-}
-
-.main-button:hover {
-    background: #333;
 }
 
 .container {
@@ -252,7 +268,6 @@ footer {
 }
 
 @media(max-width:600px) {
-
     .hero h1 {
         font-size:30px;
     }
@@ -268,30 +283,19 @@ footer {
 <body>
 
 <header>
-
-<div class="logo">
-Fit<span>See</span>
-</div>
+<div class="logo">Fit<span>See</span></div>
 
 <nav>
 <button onclick="scrollToSearch()">Szukaj</button>
 <button onclick="showWardrobe()">Moja szafa</button>
 <button>Profil</button>
 </nav>
-
 </header>
 
-
 <section class="hero">
-
 <h1>Twój osobisty stylista AI</h1>
-
-<p>
-Znajdź ubrania, stwórz stylizację i zobacz ją na sobie.
-</p>
-
+<p>Znajdź ubrania, stwórz stylizację i zobacz ją na sobie.</p>
 </section>
-
 
 <div class="search-box" id="search">
 
@@ -300,22 +304,36 @@ Znajdź ubrania, stwórz stylizację i zobacz ją na sobie.
 <input
 id="occasion"
 placeholder="Np. wesele, randka, praca, codziennie"
-value="Wesele"
+value="{{ occasion }}"
 >
 
 <input
 id="budget"
 type="number"
 placeholder="Budżet w zł"
-value="1000"
+value="{{ budget }}"
 >
 
 <select id="style">
-<option>Elegancki casual</option>
-<option>Sportowy</option>
-<option>Streetwear</option>
-<option>Klasyczny</option>
-<option>Minimalistyczny</option>
+<option {% if style == "Elegancki casual" %}selected{% endif %}>
+Elegancki casual
+</option>
+
+<option {% if style == "Sportowy" %}selected{% endif %}>
+Sportowy
+</option>
+
+<option {% if style == "Streetwear" %}selected{% endif %}>
+Streetwear
+</option>
+
+<option {% if style == "Klasyczny" %}selected{% endif %}>
+Klasyczny
+</option>
+
+<option {% if style == "Minimalistyczny" %}selected{% endif %}>
+Minimalistyczny
+</option>
 </select>
 
 <button class="main-button" onclick="findOutfit()">
@@ -324,10 +342,7 @@ value="1000"
 
 </div>
 
-
 <div class="container">
-
-<div id="results">
 
 <h2 class="section-title">
 Propozycja FitSee
@@ -337,8 +352,13 @@ Propozycja FitSee
 
 <h3>Stylizacja nr 1</h3>
 
+{% if products %}
+
 <p>
-AI dobrało zestaw na wesele bez pełnego garnituru.
+FitSee dobrało zestaw na:
+<b>{{ occasion }}</b>
+w stylu
+<b>{{ style }}</b>.
 </p>
 
 <div class="products">
@@ -349,11 +369,11 @@ AI dobrało zestaw na wesele bez pełnego garnituru.
 
 <div class="product-image">
 
-{% if product.type == "Koszula" %}
+{% if product.category == "Koszula" %}
 👕
-{% elif product.type == "Spodnie" %}
+{% elif product.category == "Spodnie" %}
 👖
-{% elif product.type == "Buty" %}
+{% elif product.category == "Buty" %}
 👟
 {% else %}
 🧥
@@ -395,12 +415,10 @@ onclick="saveProduct('{{ product.name }}')"
 
 <hr>
 
-<p>
-Cena zestawu:
-</p>
+<p>Cena zestawu:</p>
 
 <div class="total">
-977 zł
+{{ total|round(0)|int }} zł
 </div>
 
 <button
@@ -410,31 +428,34 @@ onclick="tryWholeOutfit()"
 👤 Przymierz cały zestaw na mnie
 </button>
 
-</div>
+{% else %}
 
+<p>
+Nie znaleziono produktów dla podanych kryteriów.
+</p>
+
+{% endif %}
+
+</div>
 
 <div class="ai-box">
 
 <h2>🤖 AI Stylista</h2>
 
-<p id="aiText">
-
-Ten zestaw dobrze sprawdzi się na weselu bez garnituru.
-Granatowa góra daje elegancki wygląd, a jasne sneakersy
-utrzymują nowoczesny, młodszy charakter stylizacji.
-
+<p>
+FitSee analizuje okazję, styl i budżet.
+Docelowo w tym miejscu AI będzie oceniać znalezione ubrania
+i wybierać najlepszy zestaw.
 </p>
 
 </div>
-
 
 <div class="tryon" id="tryon">
 
 <h2>Wirtualna przymierzalnia</h2>
 
 <p>
-W wersji docelowej tutaj pojawi się Twoje zdjęcie
-w wybranym ubraniu.
+W kolejnym etapie podłączymy prawdziwy moduł Virtual Try-On.
 </p>
 
 <div class="person-placeholder">
@@ -445,12 +466,7 @@ w wybranym ubraniu.
 Twoja stylizacja
 </h3>
 
-<p>
-Virtual Try-On AI — moduł testowy
-</p>
-
 </div>
-
 
 <div class="wardrobe" id="wardrobe">
 
@@ -464,15 +480,9 @@ Nie zapisano jeszcze żadnych ubrań.
 
 </div>
 
-</div>
-
-
 <footer>
-
 FitSee AI — wersja testowa MVP
-
 </footer>
-
 
 <script>
 
@@ -489,54 +499,40 @@ function findOutfit() {
     let style =
         document.getElementById("style").value;
 
-    document.getElementById("aiText").innerHTML =
-        "Szukam stylizacji na <b>" +
-        occasion +
-        "</b> w stylu <b>" +
-        style +
-        "</b> i budżecie do <b>" +
-        budget +
-        " zł</b>.<br><br>" +
-        "FitSee przygotowało zestaw najlepiej dopasowany do podanych kryteriów.";
+    let url =
+        "/?occasion=" +
+        encodeURIComponent(occasion) +
+        "&budget=" +
+        encodeURIComponent(budget) +
+        "&style=" +
+        encodeURIComponent(style);
 
-    document.getElementById("results")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    window.location.href = url;
 }
-
 
 function tryProduct(name) {
 
-    document.getElementById("tryon")
-        .style.display = "block";
+    document.getElementById("tryon").style.display = "block";
 
-    document.getElementById("tryText")
-        .innerText =
+    document.getElementById("tryText").innerText =
         "Przymierzasz: " + name;
 
-    document.getElementById("tryon")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    document.getElementById("tryon").scrollIntoView({
+        behavior:"smooth"
+    });
 }
-
 
 function tryWholeOutfit() {
 
-    document.getElementById("tryon")
-        .style.display = "block";
+    document.getElementById("tryon").style.display = "block";
 
-    document.getElementById("tryText")
-        .innerText =
+    document.getElementById("tryText").innerText =
         "Pełna stylizacja FitSee";
 
-    document.getElementById("tryon")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    document.getElementById("tryon").scrollIntoView({
+        behavior:"smooth"
+    });
 }
-
 
 function saveProduct(name) {
 
@@ -544,27 +540,22 @@ function saveProduct(name) {
         wardrobe.push(name);
     }
 
-    document.getElementById("wardrobeText")
-        .innerHTML =
-        wardrobe.join("<br>✓ ");
+    document.getElementById("wardrobeText").innerHTML =
+        "✓ " + wardrobe.join("<br>✓ ");
 }
-
 
 function showWardrobe() {
 
-    document.getElementById("wardrobe")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    document.getElementById("wardrobe").scrollIntoView({
+        behavior:"smooth"
+    });
 }
-
 
 function scrollToSearch() {
 
-    document.getElementById("search")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    document.getElementById("search").scrollIntoView({
+        behavior:"smooth"
+    });
 }
 
 </script>
@@ -576,9 +567,30 @@ function scrollToSearch() {
 
 @app.route("/")
 def home():
+    products = load_products()
+
+    occasion = request.args.get("occasion", "Wesele")
+    style = request.args.get("style", "Elegancki casual")
+
+    try:
+        budget = float(request.args.get("budget", 1000))
+    except:
+        budget = 1000
+
+    filtered_products, total = filter_products(
+        products,
+        occasion,
+        style,
+        budget
+    )
+
     return render_template_string(
         HTML,
-        products=PRODUCTS
+        products=filtered_products,
+        total=total,
+        occasion=occasion,
+        budget=int(budget),
+        style=style
     )
 
 
@@ -586,7 +598,8 @@ def home():
 def health():
     return jsonify({
         "status": "ok",
-        "app": "FitSee"
+        "app": "FitSee",
+        "products": len(load_products())
     })
 
 
