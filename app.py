@@ -1470,10 +1470,7 @@ def upload_photo():
             )
         )
 
-    file =
-        request.files[
-            "photo"
-        ]
+    file = request.files["photo"]
 
     if file.filename == "":
 
