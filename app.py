@@ -19,7 +19,6 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 PRODUCTS_FILE = os.path.join(BASE_DIR, "products.json")
-
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -32,8 +31,6 @@ ALLOWED_EXTENSIONS = {
 }
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-# maksymalnie 10 MB
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 
@@ -41,8 +38,7 @@ def allowed_file(filename):
 
     return (
         "." in filename
-        and
-        filename.rsplit(".", 1)[1].lower()
+        and filename.rsplit(".", 1)[1].lower()
         in ALLOWED_EXTENSIONS
     )
 
@@ -50,22 +46,18 @@ def allowed_file(filename):
 def load_products():
 
     try:
-
         with open(
             PRODUCTS_FILE,
             "r",
             encoding="utf-8"
         ) as f:
-
             return json.load(f)
 
     except Exception as e:
-
         print(
             "Błąd odczytu products.json:",
             e
         )
-
         return []
 
 
@@ -77,7 +69,6 @@ def filter_products(
 ):
 
     occasion = occasion.strip().lower()
-
     style = style.strip().lower()
 
     filtered = []
@@ -100,18 +91,15 @@ def filter_products(
 
         occasion_match = (
             not occasion
-            or
-            occasion in product_occasion
+            or occasion in product_occasion
         )
 
         style_match = (
             not style
-            or
-            style in product_style
+            or style in product_style
         )
 
         if occasion_match and style_match:
-
             filtered.append(product)
 
     total = sum(
@@ -137,7 +125,6 @@ def filter_products(
         )
 
         selected = []
-
         current_total = 0
 
         for product in filtered:
@@ -149,19 +136,12 @@ def filter_products(
                 )
             )
 
-            if (
-                current_total + price
-                <= budget
-            ):
+            if current_total + price <= budget:
 
-                selected.append(
-                    product
-                )
-
+                selected.append(product)
                 current_total += price
 
         filtered = selected
-
         total = current_total
 
     return filtered, total
@@ -169,7 +149,6 @@ def filter_products(
 
 HTML = """
 <!DOCTYPE html>
-
 <html lang="pl">
 
 <head>
@@ -181,9 +160,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 >
 
-<title>
-FitSee AI
-</title>
+<title>FitSee AI</title>
 
 <style>
 
@@ -282,6 +259,11 @@ select {
 
 .main-button:hover {
     background: #333;
+}
+
+.main-button:disabled {
+    opacity: .6;
+    cursor: wait;
 }
 
 .container {
@@ -406,6 +388,20 @@ select {
     margin-top: 15px;
 }
 
+.compress-info {
+    margin-top: 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+.progress {
+    display: none;
+    margin-top: 15px;
+    background: #eee;
+    border-radius: 10px;
+    padding: 15px;
+}
+
 .tryon {
     display: none;
     background: white;
@@ -447,9 +443,7 @@ footer {
     padding: 25px;
 }
 
-@media(
-    max-width: 600px
-) {
+@media(max-width:600px) {
 
     .hero h1 {
         font-size: 30px;
@@ -472,29 +466,21 @@ footer {
 <header>
 
 <div class="logo">
-
 Fit<span>See</span>
-
 </div>
 
 <nav>
 
 <button onclick="scrollToSearch()">
-
 Szukaj
-
 </button>
 
 <button onclick="scrollToPhoto()">
-
 Moje zdjęcie
-
 </button>
 
 <button onclick="showWardrobe()">
-
 Moja szafa
-
 </button>
 
 </nav>
@@ -598,9 +584,7 @@ onclick="findOutfit()"
 
 
 <h2 class="section-title">
-
 Propozycja FitSee
-
 </h2>
 
 
@@ -617,15 +601,11 @@ Stylizacja nr 1
 
 FitSee dobrało zestaw na:
 
-<b>
-{{ occasion }}
-</b>
+<b>{{ occasion }}</b>
 
 w stylu
 
-<b>
-{{ style }}
-</b>.
+<b>{{ style }}</b>.
 
 </p>
 
@@ -665,23 +645,17 @@ w stylu
 
 
 <p class="brand">
-
 {{ product.brand }}
-
 </p>
 
 
 <h3>
-
 {{ product.name }}
-
 </h3>
 
 
 <p class="price">
-
 {{ product.price }} zł
-
 </p>
 
 
@@ -718,16 +692,12 @@ onclick="saveProduct('{{ product.name }}')"
 
 
 <p>
-
 Cena zestawu:
-
 </p>
 
 
 <div class="total">
-
 {{ total|round(0)|int }} zł
-
 </div>
 
 
@@ -745,10 +715,8 @@ onclick="tryWholeOutfit()"
 
 
 <p>
-
 Nie znaleziono produktów
 dla podanych kryteriów.
-
 </p>
 
 
@@ -764,17 +732,13 @@ id="photo"
 >
 
 <h2>
-
 📸 Moje zdjęcie
-
 </h2>
 
 <p>
-
 Dodaj zdjęcie całej sylwetki.
-To zdjęcie będzie później używane
-przez moduł Virtual Try-On.
-
+FitSee automatycznie zmniejszy je
+przed wysłaniem.
 </p>
 
 
@@ -782,6 +746,7 @@ przez moduł Virtual Try-On.
 
 
 <form
+id="photoForm"
 action="/upload-photo"
 method="POST"
 enctype="multipart/form-data"
@@ -808,6 +773,7 @@ value="{{ style }}"
 
 
 <input
+id="photoInput"
 type="file"
 name="photo"
 accept="image/png,image/jpeg,image/webp"
@@ -815,7 +781,17 @@ required
 >
 
 
+<div
+class="compress-info"
+id="fileInfo"
+>
+Zdjęcie zostanie automatycznie
+zmniejszone przed wysłaniem.
+</div>
+
+
 <button
+id="uploadButton"
 type="submit"
 class="main-button"
 >
@@ -823,6 +799,16 @@ class="main-button"
 📤 Wgraj moje zdjęcie
 
 </button>
+
+
+<div
+class="progress"
+id="progress"
+>
+
+⏳ Optymalizuję i wysyłam zdjęcie...
+
+</div>
 
 
 </form>
@@ -847,9 +833,8 @@ alt="Zdjęcie użytkownika"
 
 <p>
 
-To właśnie tę osobę
-FitSee ma zachować podczas
-wirtualnego przymierzania.
+To tę osobę FitSee ma zachować
+podczas wirtualnego przymierzania.
 
 </p>
 
@@ -865,9 +850,7 @@ wirtualnego przymierzania.
 <div class="ai-box">
 
 <h2>
-
 🤖 AI Stylista
-
 </h2>
 
 <p>
@@ -875,8 +858,8 @@ wirtualnego przymierzania.
 FitSee analizuje okazję,
 styl oraz budżet użytkownika.
 
-Następnie system będzie łączył
-wyniki z prawdziwymi produktami
+Docelowo połączymy te dane
+z prawdziwymi produktami
 ze sklepów.
 
 </p>
@@ -890,9 +873,7 @@ id="tryon"
 >
 
 <h2>
-
 Wirtualna przymierzalnia
-
 </h2>
 
 
@@ -910,16 +891,12 @@ alt="Osoba do przymierzenia"
 
 
 <div class="person-placeholder">
-
 🧍
-
 </div>
 
 
 <p>
-
 Najpierw dodaj swoje zdjęcie.
-
 </p>
 
 
@@ -927,16 +904,14 @@ Najpierw dodaj swoje zdjęcie.
 
 
 <h3 id="tryText">
-
 Twoja stylizacja
-
 </h3>
 
 
 <p>
 
 Następny etap:
-podłączenie modelu Virtual Try-On,
+Virtual Try-On,
 który zmieni ubranie,
 ale zachowa tę samą osobę.
 
@@ -952,15 +927,11 @@ id="wardrobe"
 >
 
 <h2>
-
 👔 Moja szafa
-
 </h2>
 
 <p id="wardrobeText">
-
 Nie zapisano jeszcze żadnych ubrań.
-
 </p>
 
 </div>
@@ -985,47 +956,35 @@ let wardrobe = [];
 function findOutfit() {
 
     let occasion =
-        document
-        .getElementById(
+        document.getElementById(
             "occasion"
-        )
-        .value;
+        ).value;
 
     let budget =
-        document
-        .getElementById(
+        document.getElementById(
             "budget"
-        )
-        .value;
+        ).value;
 
     let style =
-        document
-        .getElementById(
+        document.getElementById(
             "style"
-        )
-        .value;
+        ).value;
 
     let url =
         "/?occasion="
-        +
-        encodeURIComponent(
+        + encodeURIComponent(
             occasion
         )
-        +
-        "&budget="
-        +
-        encodeURIComponent(
+        + "&budget="
+        + encodeURIComponent(
             budget
         )
-        +
-        "&style="
-        +
-        encodeURIComponent(
+        + "&style="
+        + encodeURIComponent(
             style
         );
 
-    window.location.href =
-        url;
+    window.location.href = url;
 
 }
 
@@ -1033,28 +992,18 @@ function findOutfit() {
 function tryProduct(name) {
 
     document
-    .getElementById(
-        "tryon"
-    )
-    .style.display =
-        "block";
+    .getElementById("tryon")
+    .style.display = "block";
 
     document
-    .getElementById(
-        "tryText"
-    )
+    .getElementById("tryText")
     .innerText =
-        "Przymierzasz: "
-        +
-        name;
+        "Przymierzasz: " + name;
 
     document
-    .getElementById(
-        "tryon"
-    )
+    .getElementById("tryon")
     .scrollIntoView({
-        behavior:
-        "smooth"
+        behavior:"smooth"
     });
 
 }
@@ -1063,26 +1012,18 @@ function tryProduct(name) {
 function tryWholeOutfit() {
 
     document
-    .getElementById(
-        "tryon"
-    )
-    .style.display =
-        "block";
+    .getElementById("tryon")
+    .style.display = "block";
 
     document
-    .getElementById(
-        "tryText"
-    )
+    .getElementById("tryText")
     .innerText =
         "Pełna stylizacja FitSee";
 
     document
-    .getElementById(
-        "tryon"
-    )
+    .getElementById("tryon")
     .scrollIntoView({
-        behavior:
-        "smooth"
+        behavior:"smooth"
     });
 
 }
@@ -1090,26 +1031,15 @@ function tryWholeOutfit() {
 
 function saveProduct(name) {
 
-    if(
-        !wardrobe.includes(
-            name
-        )
-    ) {
-
-        wardrobe.push(
-            name
-        );
-
+    if(!wardrobe.includes(name)) {
+        wardrobe.push(name);
     }
 
     document
-    .getElementById(
-        "wardrobeText"
-    )
+    .getElementById("wardrobeText")
     .innerHTML =
         "✓ "
-        +
-        wardrobe.join(
+        + wardrobe.join(
             "<br>✓ "
         );
 
@@ -1119,12 +1049,9 @@ function saveProduct(name) {
 function showWardrobe() {
 
     document
-    .getElementById(
-        "wardrobe"
-    )
+    .getElementById("wardrobe")
     .scrollIntoView({
-        behavior:
-        "smooth"
+        behavior:"smooth"
     });
 
 }
@@ -1133,12 +1060,9 @@ function showWardrobe() {
 function scrollToSearch() {
 
     document
-    .getElementById(
-        "search"
-    )
+    .getElementById("search")
     .scrollIntoView({
-        behavior:
-        "smooth"
+        behavior:"smooth"
     });
 
 }
@@ -1147,13 +1071,325 @@ function scrollToSearch() {
 function scrollToPhoto() {
 
     document
-    .getElementById(
-        "photo"
-    )
+    .getElementById("photo")
     .scrollIntoView({
-        behavior:
-        "smooth"
+        behavior:"smooth"
     });
+
+}
+
+
+const photoInput =
+    document.getElementById(
+        "photoInput"
+    );
+
+const photoForm =
+    document.getElementById(
+        "photoForm"
+    );
+
+const uploadButton =
+    document.getElementById(
+        "uploadButton"
+    );
+
+const progress =
+    document.getElementById(
+        "progress"
+    );
+
+const fileInfo =
+    document.getElementById(
+        "fileInfo"
+    );
+
+
+photoInput.addEventListener(
+    "change",
+    function() {
+
+        if(
+            photoInput.files.length
+            === 0
+        ) {
+            return;
+        }
+
+        const file =
+            photoInput.files[0];
+
+        const mb =
+            file.size
+            /
+            1024
+            /
+            1024;
+
+        fileInfo.innerText =
+            "Oryginalne zdjęcie: "
+            +
+            mb.toFixed(1)
+            +
+            " MB. FitSee zmniejszy je przed wysłaniem.";
+
+    }
+);
+
+
+photoForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        if(
+            photoInput.files.length
+            === 0
+        ) {
+            return;
+        }
+
+        uploadButton.disabled = true;
+
+        progress.style.display =
+            "block";
+
+        progress.innerText =
+            "⏳ Zmniejszam zdjęcie...";
+
+        try {
+
+            const originalFile =
+                photoInput.files[0];
+
+            const compressedBlob =
+                await compressImage(
+                    originalFile
+                );
+
+            const formData =
+                new FormData(
+                    photoForm
+                );
+
+            formData.delete(
+                "photo"
+            );
+
+            formData.append(
+                "photo",
+                compressedBlob,
+                "fitsee-photo.jpg"
+            );
+
+            const compressedMB =
+                compressedBlob.size
+                /
+                1024
+                /
+                1024;
+
+            progress.innerText =
+                "📤 Wysyłam zdjęcie "
+                +
+                compressedMB.toFixed(2)
+                +
+                " MB...";
+
+            const response =
+                await fetch(
+                    "/upload-photo",
+                    {
+                        method:
+                        "POST",
+
+                        body:
+                        formData
+                    }
+                );
+
+            if(
+                response.redirected
+            ) {
+
+                window.location.href =
+                    response.url;
+
+                return;
+            }
+
+            if(
+                !response.ok
+            ) {
+
+                throw new Error(
+                    "Upload failed"
+                );
+
+            }
+
+            window.location.reload();
+
+        }
+
+        catch(error) {
+
+            console.error(
+                error
+            );
+
+            progress.innerText =
+                "❌ Nie udało się wysłać zdjęcia.";
+
+            uploadButton.disabled =
+                false;
+
+        }
+
+    }
+);
+
+
+function compressImage(file) {
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function(event) {
+
+                    const image =
+                        new Image();
+
+                    image.onload =
+                        function() {
+
+                            const MAX_SIZE =
+                                1600;
+
+                            let width =
+                                image.width;
+
+                            let height =
+                                image.height;
+
+                            if(
+                                width
+                                >
+                                MAX_SIZE
+                                ||
+                                height
+                                >
+                                MAX_SIZE
+                            ) {
+
+                                const ratio =
+                                    Math.min(
+                                        MAX_SIZE
+                                        /
+                                        width,
+
+                                        MAX_SIZE
+                                        /
+                                        height
+                                    );
+
+                                width =
+                                    Math.round(
+                                        width
+                                        *
+                                        ratio
+                                    );
+
+                                height =
+                                    Math.round(
+                                        height
+                                        *
+                                        ratio
+                                    );
+
+                            }
+
+                            const canvas =
+                                document
+                                .createElement(
+                                    "canvas"
+                                );
+
+                            canvas.width =
+                                width;
+
+                            canvas.height =
+                                height;
+
+                            const ctx =
+                                canvas
+                                .getContext(
+                                    "2d"
+                                );
+
+                            ctx.drawImage(
+                                image,
+                                0,
+                                0,
+                                width,
+                                height
+                            );
+
+                            canvas.toBlob(
+                                function(blob) {
+
+                                    if(blob) {
+
+                                        resolve(
+                                            blob
+                                        );
+
+                                    }
+                                    else {
+
+                                        reject(
+                                            new Error(
+                                                "Compression failed"
+                                            )
+                                        );
+
+                                    }
+
+                                },
+
+                                "image/jpeg",
+
+                                0.82
+
+                            );
+
+                        };
+
+                    image.onerror =
+                        reject;
+
+                    image.src =
+                        event.target.result;
+
+                };
+
+            reader.onerror =
+                reject;
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
 
 }
 
@@ -1234,9 +1470,10 @@ def upload_photo():
             )
         )
 
-    file = request.files[
-        "photo"
-    ]
+    file =
+        request.files[
+            "photo"
+        ]
 
     if file.filename == "":
 
@@ -1256,22 +1493,20 @@ def upload_photo():
             400
         )
 
-    original_name = (
+    original_name =
         secure_filename(
             file.filename
         )
-    )
 
-    extension = (
+    extension =
         original_name
         .rsplit(
             ".",
             1
         )[1]
         .lower()
-    )
 
-    filename = (
+    filename =
         str(
             uuid.uuid4()
         )
@@ -1279,33 +1514,34 @@ def upload_photo():
         "."
         +
         extension
-    )
 
-    path = os.path.join(
-        app.config[
-            "UPLOAD_FOLDER"
-        ],
-        filename
-    )
+    path =
+        os.path.join(
+            app.config[
+                "UPLOAD_FOLDER"
+            ],
+            filename
+        )
 
-    file.save(
-        path
-    )
+    file.save(path)
 
-    occasion = request.form.get(
-        "occasion",
-        "Wesele"
-    )
+    occasion =
+        request.form.get(
+            "occasion",
+            "Wesele"
+        )
 
-    budget = request.form.get(
-        "budget",
-        "1000"
-    )
+    budget =
+        request.form.get(
+            "budget",
+            "1000"
+        )
 
-    style = request.form.get(
-        "style",
-        "Elegancki casual"
-    )
+    style =
+        request.form.get(
+            "style",
+            "Elegancki casual"
+        )
 
     return redirect(
         url_for(
@@ -1339,8 +1575,12 @@ def uploaded_file(
 def health():
 
     return jsonify({
-        "status": "ok",
-        "app": "FitSee",
+        "status":
+        "ok",
+
+        "app":
+        "FitSee",
+
         "products":
         len(
             load_products()
