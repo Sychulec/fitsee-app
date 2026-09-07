@@ -5,7 +5,8 @@ from flask import (
     jsonify,
     redirect,
     url_for,
-    send_from_directory
+    send_from_directory,
+    Response
 )
 from werkzeug.utils import secure_filename
 
@@ -55,7 +56,7 @@ def load_products():
 
     except Exception as e:
         print(
-            "BĹÄd odczytu products.json:",
+            "Błąd odczytu products.json:",
             e
         )
         return []
@@ -476,7 +477,7 @@ Szukaj
 </button>
 
 <button onclick="scrollToPhoto()">
-Moje zdjÄcie
+Moje zdjęcie
 </button>
 
 <button onclick="showWardrobe()">
@@ -491,12 +492,12 @@ Moja szafa
 <section class="hero">
 
 <h1>
-TwĂłj osobisty stylista AI
+Twój osobisty stylista AI
 </h1>
 
 <p>
-ZnajdĹş ubrania, stwĂłrz stylizacjÄ
-i zobacz jÄ na sobie.
+Znajdź ubrania, stwórz stylizację
+i zobacz ją na sobie.
 </p>
 
 </section>
@@ -520,7 +521,7 @@ value="{{ occasion }}"
 <input
 id="budget"
 type="number"
-placeholder="BudĹźet w zĹ"
+placeholder="Budżet w zł"
 value="{{ budget }}"
 >
 
@@ -573,7 +574,7 @@ class="main-button"
 onclick="findOutfit()"
 >
 
-â¨ ZnajdĹş stylizacjÄ
+✨ Znajdź stylizację
 
 </button>
 
@@ -599,7 +600,7 @@ Stylizacja nr 1
 
 <p>
 
-FitSee dobraĹo zestaw na:
+FitSee dobrało zestaw na:
 
 <b>{{ occasion }}</b>
 
@@ -624,19 +625,19 @@ w stylu
 
 {% if product.category == "Koszula" %}
 
-đ
+👕
 
 {% elif product.category == "Spodnie" %}
 
-đ
+👖
 
 {% elif product.category == "Buty" %}
 
-đ
+👟
 
 {% else %}
 
-đ§Ľ
+🧥
 
 {% endif %}
 
@@ -655,7 +656,7 @@ w stylu
 
 
 <p class="price">
-{{ product.price }} zĹ
+{{ product.price }} zł
 </p>
 
 
@@ -674,7 +675,7 @@ class="small-btn save"
 onclick="saveProduct('{{ product.name }}')"
 >
 
-âĄ Zapisz
+♡ Zapisz
 
 </button>
 
@@ -697,7 +698,7 @@ Cena zestawu:
 
 
 <div class="total">
-{{ total|round(0)|int }} zĹ
+{{ total|round(0)|int }} zł
 </div>
 
 
@@ -706,7 +707,7 @@ class="main-button"
 onclick="tryWholeOutfit()"
 >
 
-đ¤ Przymierz caĹy zestaw na mnie
+👤 Przymierz cały zestaw na mnie
 
 </button>
 
@@ -715,8 +716,8 @@ onclick="tryWholeOutfit()"
 
 
 <p>
-Nie znaleziono produktĂłw
-dla podanych kryteriĂłw.
+Nie znaleziono produktów
+dla podanych kryteriów.
 </p>
 
 
@@ -732,13 +733,13 @@ id="photo"
 >
 
 <h2>
-đ¸ Moje zdjÄcie
+📸 Moje zdjęcie
 </h2>
 
 <p>
-Dodaj zdjÄcie caĹej sylwetki.
+Dodaj zdjęcie całej sylwetki.
 FitSee automatycznie zmniejszy je
-przed wysĹaniem.
+przed wysłaniem.
 </p>
 
 
@@ -785,8 +786,8 @@ required
 class="compress-info"
 id="fileInfo"
 >
-ZdjÄcie zostanie automatycznie
-zmniejszone przed wysĹaniem.
+Zdjęcie zostanie automatycznie
+zmniejszone przed wysłaniem.
 </div>
 
 
@@ -796,7 +797,7 @@ type="submit"
 class="main-button"
 >
 
-đ¤ Wgraj moje zdjÄcie
+📤 Wgraj moje zdjęcie
 
 </button>
 
@@ -806,7 +807,7 @@ class="progress"
 id="progress"
 >
 
-âł OptymalizujÄ i wysyĹam zdjÄcie...
+⏳ Optymalizuję i wysyłam zdjęcie...
 
 </div>
 
@@ -819,7 +820,7 @@ id="progress"
 
 <div class="photo-info">
 
-â ZdjÄcie zostaĹo wgrane.
+✅ Zdjęcie zostało wgrane.
 
 </div>
 
@@ -827,13 +828,13 @@ id="progress"
 <img
 class="user-photo"
 src="/uploads/{{ photo }}"
-alt="ZdjÄcie uĹźytkownika"
+alt="Zdjęcie użytkownika"
 >
 
 
 <p>
 
-To tÄ osobÄ FitSee ma zachowaÄ
+To tę osobę FitSee ma zachować
 podczas wirtualnego przymierzania.
 
 </p>
@@ -850,17 +851,17 @@ podczas wirtualnego przymierzania.
 <div class="ai-box">
 
 <h2>
-đ¤ AI Stylista
+🤖 AI Stylista
 </h2>
 
 <p>
 
-FitSee analizuje okazjÄ,
-styl oraz budĹźet uĹźytkownika.
+FitSee analizuje okazję,
+styl oraz budżet użytkownika.
 
-Docelowo poĹÄczymy te dane
+Docelowo połączymy te dane
 z prawdziwymi produktami
-ze sklepĂłw.
+ze sklepów.
 
 </p>
 
@@ -891,12 +892,12 @@ alt="Osoba do przymierzenia"
 
 
 <div class="person-placeholder">
-đ§
+🧍
 </div>
 
 
 <p>
-Najpierw dodaj swoje zdjÄcie.
+Najpierw dodaj swoje zdjęcie.
 </p>
 
 
@@ -910,10 +911,10 @@ Twoja stylizacja
 
 <p>
 
-NastÄpny etap:
+Następny etap:
 Virtual Try-On,
-ktĂłry zmieni ubranie,
-ale zachowa tÄ samÄ osobÄ.
+który zmieni ubranie,
+ale zachowa tę samą osobę.
 
 </p>
 
@@ -927,11 +928,11 @@ id="wardrobe"
 >
 
 <h2>
-đ Moja szafa
+👔 Moja szafa
 </h2>
 
 <p id="wardrobeText">
-Nie zapisano jeszcze Ĺźadnych ubraĹ.
+Nie zapisano jeszcze żadnych ubrań.
 </p>
 
 </div>
@@ -942,7 +943,7 @@ Nie zapisano jeszcze Ĺźadnych ubraĹ.
 
 <footer>
 
-FitSee AI â wersja testowa MVP
+FitSee AI — wersja testowa MVP
 
 </footer>
 
@@ -1018,7 +1019,7 @@ function tryWholeOutfit() {
     document
     .getElementById("tryText")
     .innerText =
-        "PeĹna stylizacja FitSee";
+        "Pełna stylizacja FitSee";
 
     document
     .getElementById("tryon")
@@ -1038,9 +1039,9 @@ function saveProduct(name) {
     document
     .getElementById("wardrobeText")
     .innerHTML =
-        "â "
+        "✓ "
         + wardrobe.join(
-            "<br>â "
+            "<br>✓ "
         );
 
 }
@@ -1127,11 +1128,11 @@ photoInput.addEventListener(
             1024;
 
         fileInfo.innerText =
-            "Oryginalne zdjÄcie: "
+            "Oryginalne zdjęcie: "
             +
             mb.toFixed(1)
             +
-            " MB. FitSee zmniejszy je przed wysĹaniem.";
+            " MB. FitSee zmniejszy je przed wysłaniem.";
 
     }
 );
@@ -1156,7 +1157,7 @@ photoForm.addEventListener(
             "block";
 
         progress.innerText =
-            "âł Zmniejszam zdjÄcie...";
+            "⏳ Zmniejszam zdjęcie...";
 
         try {
 
@@ -1191,7 +1192,7 @@ photoForm.addEventListener(
                 1024;
 
             progress.innerText =
-                "đ¤ WysyĹam zdjÄcie "
+                "📤 Wysyłam zdjęcie "
                 +
                 compressedMB.toFixed(2)
                 +
@@ -1240,7 +1241,7 @@ photoForm.addEventListener(
             );
 
             progress.innerText =
-                "â Nie udaĹo siÄ wysĹaÄ zdjÄcia.";
+                "❌ Nie udało się wysłać zdjęcia.";
 
             uploadButton.disabled =
                 false;
@@ -1445,7 +1446,7 @@ def home():
         )
     )
 
-    return render_template_string(
+    html = render_template_string(
         HTML,
         products=filtered_products,
         total=total,
@@ -1453,6 +1454,11 @@ def home():
         budget=int(budget),
         style=style,
         photo=photo
+    )
+
+    return Response(
+        html,
+        content_type="text/html; charset=utf-8"
     )
 
 
