@@ -55,7 +55,7 @@ def load_products():
 
     except Exception as e:
         print(
-            "Błąd odczytu products.json:",
+            "BĹÄd odczytu products.json:",
             e
         )
         return []
@@ -476,7 +476,7 @@ Szukaj
 </button>
 
 <button onclick="scrollToPhoto()">
-Moje zdjęcie
+Moje zdjÄcie
 </button>
 
 <button onclick="showWardrobe()">
@@ -491,12 +491,12 @@ Moja szafa
 <section class="hero">
 
 <h1>
-Twój osobisty stylista AI
+TwĂłj osobisty stylista AI
 </h1>
 
 <p>
-Znajdź ubrania, stwórz stylizację
-i zobacz ją na sobie.
+ZnajdĹş ubrania, stwĂłrz stylizacjÄ
+i zobacz jÄ na sobie.
 </p>
 
 </section>
@@ -520,7 +520,7 @@ value="{{ occasion }}"
 <input
 id="budget"
 type="number"
-placeholder="Budżet w zł"
+placeholder="BudĹźet w zĹ"
 value="{{ budget }}"
 >
 
@@ -573,7 +573,7 @@ class="main-button"
 onclick="findOutfit()"
 >
 
-✨ Znajdź stylizację
+â¨ ZnajdĹş stylizacjÄ
 
 </button>
 
@@ -599,7 +599,7 @@ Stylizacja nr 1
 
 <p>
 
-FitSee dobrało zestaw na:
+FitSee dobraĹo zestaw na:
 
 <b>{{ occasion }}</b>
 
@@ -624,19 +624,19 @@ w stylu
 
 {% if product.category == "Koszula" %}
 
-👕
+đ
 
 {% elif product.category == "Spodnie" %}
 
-👖
+đ
 
 {% elif product.category == "Buty" %}
 
-👟
+đ
 
 {% else %}
 
-🧥
+đ§Ľ
 
 {% endif %}
 
@@ -655,7 +655,7 @@ w stylu
 
 
 <p class="price">
-{{ product.price }} zł
+{{ product.price }} zĹ
 </p>
 
 
@@ -674,7 +674,7 @@ class="small-btn save"
 onclick="saveProduct('{{ product.name }}')"
 >
 
-♡ Zapisz
+âĄ Zapisz
 
 </button>
 
@@ -697,7 +697,7 @@ Cena zestawu:
 
 
 <div class="total">
-{{ total|round(0)|int }} zł
+{{ total|round(0)|int }} zĹ
 </div>
 
 
@@ -706,7 +706,7 @@ class="main-button"
 onclick="tryWholeOutfit()"
 >
 
-👤 Przymierz cały zestaw na mnie
+đ¤ Przymierz caĹy zestaw na mnie
 
 </button>
 
@@ -715,8 +715,8 @@ onclick="tryWholeOutfit()"
 
 
 <p>
-Nie znaleziono produktów
-dla podanych kryteriów.
+Nie znaleziono produktĂłw
+dla podanych kryteriĂłw.
 </p>
 
 
@@ -732,13 +732,13 @@ id="photo"
 >
 
 <h2>
-📸 Moje zdjęcie
+đ¸ Moje zdjÄcie
 </h2>
 
 <p>
-Dodaj zdjęcie całej sylwetki.
+Dodaj zdjÄcie caĹej sylwetki.
 FitSee automatycznie zmniejszy je
-przed wysłaniem.
+przed wysĹaniem.
 </p>
 
 
@@ -785,8 +785,8 @@ required
 class="compress-info"
 id="fileInfo"
 >
-Zdjęcie zostanie automatycznie
-zmniejszone przed wysłaniem.
+ZdjÄcie zostanie automatycznie
+zmniejszone przed wysĹaniem.
 </div>
 
 
@@ -796,7 +796,7 @@ type="submit"
 class="main-button"
 >
 
-📤 Wgraj moje zdjęcie
+đ¤ Wgraj moje zdjÄcie
 
 </button>
 
@@ -806,7 +806,7 @@ class="progress"
 id="progress"
 >
 
-⏳ Optymalizuję i wysyłam zdjęcie...
+âł OptymalizujÄ i wysyĹam zdjÄcie...
 
 </div>
 
@@ -819,7 +819,7 @@ id="progress"
 
 <div class="photo-info">
 
-✅ Zdjęcie zostało wgrane.
+â ZdjÄcie zostaĹo wgrane.
 
 </div>
 
@@ -827,13 +827,13 @@ id="progress"
 <img
 class="user-photo"
 src="/uploads/{{ photo }}"
-alt="Zdjęcie użytkownika"
+alt="ZdjÄcie uĹźytkownika"
 >
 
 
 <p>
 
-To tę osobę FitSee ma zachować
+To tÄ osobÄ FitSee ma zachowaÄ
 podczas wirtualnego przymierzania.
 
 </p>
@@ -850,17 +850,17 @@ podczas wirtualnego przymierzania.
 <div class="ai-box">
 
 <h2>
-🤖 AI Stylista
+đ¤ AI Stylista
 </h2>
 
 <p>
 
-FitSee analizuje okazję,
-styl oraz budżet użytkownika.
+FitSee analizuje okazjÄ,
+styl oraz budĹźet uĹźytkownika.
 
-Docelowo połączymy te dane
+Docelowo poĹÄczymy te dane
 z prawdziwymi produktami
-ze sklepów.
+ze sklepĂłw.
 
 </p>
 
@@ -891,12 +891,12 @@ alt="Osoba do przymierzenia"
 
 
 <div class="person-placeholder">
-🧍
+đ§
 </div>
 
 
 <p>
-Najpierw dodaj swoje zdjęcie.
+Najpierw dodaj swoje zdjÄcie.
 </p>
 
 
@@ -910,10 +910,10 @@ Twoja stylizacja
 
 <p>
 
-Następny etap:
+NastÄpny etap:
 Virtual Try-On,
-który zmieni ubranie,
-ale zachowa tę samą osobę.
+ktĂłry zmieni ubranie,
+ale zachowa tÄ samÄ osobÄ.
 
 </p>
 
@@ -927,11 +927,11 @@ id="wardrobe"
 >
 
 <h2>
-👔 Moja szafa
+đ Moja szafa
 </h2>
 
 <p id="wardrobeText">
-Nie zapisano jeszcze żadnych ubrań.
+Nie zapisano jeszcze Ĺźadnych ubraĹ.
 </p>
 
 </div>
@@ -942,7 +942,7 @@ Nie zapisano jeszcze żadnych ubrań.
 
 <footer>
 
-FitSee AI — wersja testowa MVP
+FitSee AI â wersja testowa MVP
 
 </footer>
 
@@ -1018,7 +1018,7 @@ function tryWholeOutfit() {
     document
     .getElementById("tryText")
     .innerText =
-        "Pełna stylizacja FitSee";
+        "PeĹna stylizacja FitSee";
 
     document
     .getElementById("tryon")
@@ -1038,9 +1038,9 @@ function saveProduct(name) {
     document
     .getElementById("wardrobeText")
     .innerHTML =
-        "✓ "
+        "â "
         + wardrobe.join(
-            "<br>✓ "
+            "<br>â "
         );
 
 }
@@ -1127,11 +1127,11 @@ photoInput.addEventListener(
             1024;
 
         fileInfo.innerText =
-            "Oryginalne zdjęcie: "
+            "Oryginalne zdjÄcie: "
             +
             mb.toFixed(1)
             +
-            " MB. FitSee zmniejszy je przed wysłaniem.";
+            " MB. FitSee zmniejszy je przed wysĹaniem.";
 
     }
 );
@@ -1156,7 +1156,7 @@ photoForm.addEventListener(
             "block";
 
         progress.innerText =
-            "⏳ Zmniejszam zdjęcie...";
+            "âł Zmniejszam zdjÄcie...";
 
         try {
 
@@ -1191,7 +1191,7 @@ photoForm.addEventListener(
                 1024;
 
             progress.innerText =
-                "📤 Wysyłam zdjęcie "
+                "đ¤ WysyĹam zdjÄcie "
                 +
                 compressedMB.toFixed(2)
                 +
@@ -1240,7 +1240,7 @@ photoForm.addEventListener(
             );
 
             progress.innerText =
-                "❌ Nie udało się wysłać zdjęcia.";
+                "â Nie udaĹo siÄ wysĹaÄ zdjÄcia.";
 
             uploadButton.disabled =
                 false;
@@ -1456,89 +1456,37 @@ def home():
     )
 
 
-@app.route(
-    "/upload-photo",
-    methods=["POST"]
-)
+@app.route("/upload-photo", methods=["POST"])
 def upload_photo():
 
     if "photo" not in request.files:
-
-        return redirect(
-            url_for(
-                "home"
-            )
-        )
+        return redirect(url_for("home"))
 
     file = request.files["photo"]
 
     if file.filename == "":
+        return redirect(url_for("home"))
 
-        return redirect(
-            url_for(
-                "home"
-            )
-        )
-
-    if not allowed_file(
-        file.filename
-    ):
-
+    if not allowed_file(file.filename):
         return (
-            "Dozwolone formaty: "
-            "JPG, JPEG, PNG, WEBP",
+            "Dozwolone formaty: JPG, JPEG, PNG, WEBP",
             400
         )
 
-    original_name =
-        secure_filename(
-            file.filename
-        )
+    original_name = secure_filename(file.filename)
+    extension = original_name.rsplit(".", 1)[1].lower()
+    filename = str(uuid.uuid4()) + "." + extension
 
-    extension =
-        original_name
-        .rsplit(
-            ".",
-            1
-        )[1]
-        .lower()
-
-    filename =
-        str(
-            uuid.uuid4()
-        )
-        +
-        "."
-        +
-        extension
-
-    path =
-        os.path.join(
-            app.config[
-                "UPLOAD_FOLDER"
-            ],
-            filename
-        )
+    path = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        filename
+    )
 
     file.save(path)
 
-    occasion =
-        request.form.get(
-            "occasion",
-            "Wesele"
-        )
-
-    budget =
-        request.form.get(
-            "budget",
-            "1000"
-        )
-
-    style =
-        request.form.get(
-            "style",
-            "Elegancki casual"
-        )
+    occasion = request.form.get("occasion", "Wesele")
+    budget = request.form.get("budget", "1000")
+    style = request.form.get("style", "Elegancki casual")
 
     return redirect(
         url_for(
@@ -1547,9 +1495,7 @@ def upload_photo():
             budget=budget,
             style=style,
             photo=filename
-        )
-        +
-        "#photo"
+        ) + "#photo"
     )
 
 
